@@ -1,5 +1,5 @@
 {
-  "name": "package-simulator",
+  "name": "simpack",
   "version": "0.1.0",
   "description": "Package simulator apps for test distribution",
   "main": "simpack.js",
