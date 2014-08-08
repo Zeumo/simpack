@@ -1,6 +1,6 @@
 #!/bin/bash
 
-root_path="$HOME/Library/Application Support/iPhone Simulator/7.1/Applications/"
+root_path="$HOME/Library/Application Support/iPhone Simulator/{simulatorVersion}/Applications/"
 path="`dirname \"$0\"`"
 archive="$path/app.zip"
 

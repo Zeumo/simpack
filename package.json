@@ -2,7 +2,7 @@
   "name": "package-simulator",
   "version": "0.1.0",
   "description": "Package simulator apps for test distribution",
-  "main": "index.js",
+  "main": "simpack.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

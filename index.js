@@ -1,1 +1,0 @@
-var simulator = require('./simulator');

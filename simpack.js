@@ -4,39 +4,36 @@ var _ = require('lodash'),
 require('shelljs/global');
 
 (function() {
-  var Simulator;
+  var Simpack;
 
-  Simulator = function(options) {
-    if (!(this instanceof Simulator)) {
-      return new Simulator(options);
+  Simpack = function(options) {
+    if (!(this instanceof Simpack)) {
+      return new Simpack(options);
     }
 
     this.options = _.extend({
       app: 'app.json',
       dest: pwd(),
-      notify: []
+      simulatorVersion: '7.1'
     }, options);
 
-    this.cwd = pwd();
     this.app = this._fetchAppData();
-    this.version = _.compact([this.app.version, this.app.build]).join('-');
+    this.app.simulatorVersion = this.options.simulatorVersion;
 
+    this.cwd = pwd();
+    this.version = _.compact([this.app.version, this.app.build]).join('-');
     this.appName = this.app.display_name.replace(' ', '-').toLowerCase();
     this.finalTarget = [this.appName, this.version].join('-') + '.zip';
   };
 
-  Simulator.prototype = {
-
-    zip: function() {
-      this.compileIOS();
-      this.pack();
-
-      if (this.options.notify.length) {
-        this.notify();
-      }
-    },
+  Simpack.prototype = {
 
     pack: function() {
+      this.compile();
+      this.zip();
+    },
+
+    zip: function() {
       var uuid = this._uuid(),
           tmpDir = '/tmp/' + uuid;
 
@@ -59,29 +56,21 @@ require('shelljs/global');
       rm('-rf', tmpDir, '/tmp/' + this.app.name);
     },
 
-    compileIOS: function() {
+    compile: function() {
       var commands = [
-        "xcodebuild" +
-          " -configuration Release" +
-          " -target " + this.app.name +
-          " -scheme " + this.app.name +
-          " -sdk iphonesimulator" +
-          " DSTROOT=/tmp/" + this.app.name + " install"
+        'xcodebuild' +
+          ' -configuration Release' +
+          ' -target ' + this.app.name +
+          ' -scheme ' + this.app.name +
+          ' -sdk iphonesimulator' +
+          ' DSTROOT=/tmp/' + this.app.name + ' install'
       ];
       cd('platforms/ios');
       exec(commands);
     },
 
-    notify: function() {
-      // TODO: Emailer
-    },
-
-    _appPath: function() {
-      return this._rootPath() + thiis._uuid();
-    },
-
     _rootPath: function() {
-      return "$HOME/Library/Application\\ Support/iPhone\\ Simulator/7.1/Applications/";
+      return '$HOME/Library/Application\\ Support/iPhone\\ Simulator/' + this.options.simulatorVersion + '/Applications/';
     },
 
     _fetchAppData: function() {
@@ -114,6 +103,6 @@ require('shelljs/global');
     }
   };
 
-  module.exports = Simulator;
+  module.exports = Simpack;
 
 }).call(this);
