@@ -1,7 +1,7 @@
 {
   "name": "simpack",
   "version": "0.1.0",
-  "description": "Package simulator apps for test distribution",
+  "description": "Package iOS simulator builds easily",
   "main": "simpack.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
