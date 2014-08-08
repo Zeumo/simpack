@@ -17,13 +17,13 @@ require('shelljs/global');
       simulatorVersion: '7.1'
     }, options);
 
-    this.app = this._fetchAppData();
+    this.app = this._appData();
     this.app.simulatorVersion = this.options.simulatorVersion;
 
-    this.cwd = pwd();
+    this.cwd     = pwd();
     this.version = _.compact([this.app.version, this.app.build]).join('-');
     this.appName = this.app.display_name.replace(' ', '-').toLowerCase();
-    this.finalTarget = [this.appName, this.version].join('-') + '.zip';
+    this.target  = [this.appName, this.version].join('-') + '.zip';
   };
 
   Simpack.prototype = {
@@ -49,10 +49,10 @@ require('shelljs/global');
       exec('zip -r app.zip "' + uuid + '"');
 
       // Zip up the app and the bash installer
-      exec('zip -rj ' + this.finalTarget + ' install.command' + ' app.zip');
+      exec('zip -rj ' + this.target + ' install.command' + ' app.zip');
 
       // Cleanup
-      mv(this.finalTarget, this.options.dest);
+      mv(this.target, this.options.dest);
       rm('-rf', tmpDir, '/tmp/' + this.app.name);
     },
 
@@ -73,7 +73,7 @@ require('shelljs/global');
       return '$HOME/Library/Application\\ Support/iPhone\\ Simulator/' + this.options.simulatorVersion + '/Applications/';
     },
 
-    _fetchAppData: function() {
+    _appData: function() {
       return JSON.parse(fs.readFileSync(this.options.app, 'utf8'));
     },
 
