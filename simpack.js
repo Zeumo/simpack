@@ -90,11 +90,13 @@ require('shelljs/global');
     },
 
     _writeInstaller: function() {
-      var input = 'install.command';
-      var content = fs.readFileSync([__dirname, input].join('/'), 'utf8');
+      var input     = 'install.command';
+      var content   = fs.readFileSync([__dirname, input].join('/'), 'utf8');
+      var installer = ['/tmp', input].join('/');
 
       content = this._template(content, this.app);
-      fs.writeFileSync(['/tmp', input].join('/'), content);
+      fs.writeFileSync(installer, content);
+      fs.chmodSync(installer, '755');
     },
 
     _template: function(s, d) {
