@@ -54,6 +54,7 @@ require('shelljs/global');
       // Cleanup
       mv(this.target, this.options.dest);
       rm('-rf', tmpDir, '/tmp/' + this.app.name);
+      cd(this.cwd);
     },
 
     compile: function() {
