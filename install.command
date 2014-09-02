@@ -5,7 +5,7 @@ path="`dirname \"$0\"`"
 archive="$path/app.zip"
 
 # Find and remove existing app
-existing_app=find "$root_path" -iname "{name}.app"
+existing_app=`find "$root_path" -iname "{name}.app"`
 if [[ $existing_app != "" ]]; then
   rm -rf ../$existing_app
 fi
