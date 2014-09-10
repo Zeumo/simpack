@@ -81,7 +81,7 @@ require('shelljs/global');
     },
 
     _rootPath: function() {
-      return '$HOME/Library/Application\\ Support/iPhone\\ Simulator/' + this.options.simulatorVersion + '/Applications/';
+      return '$HOME/Library/Application\\ Support/iPhone\\ Simulator/' + this.options.simulatorVersion + '/Applications';
     },
 
     _appData: function() {
