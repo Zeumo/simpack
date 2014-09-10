@@ -25,6 +25,11 @@ require('shelljs/global');
     this.version = _.compact([this.app.version, this.app.build]).join('-');
     this.appName = this.app.display_name.replace(' ', '-').toLowerCase();
     this.target  = [this.appName, this.version].join('-') + '.zip';
+    this.uuid = this._uuid();
+
+    if (!this.uuid) {
+      throw "Could not find UUID. Try building the app with XCode first.";
+    }
   };
 
   Simpack.prototype = {
@@ -35,8 +40,7 @@ require('shelljs/global');
     },
 
     zip: function() {
-      var uuid = this._uuid(),
-          tmpDir = '/tmp/' + uuid;
+      var tmpDir = '/tmp/' + this.uuid;
 
       // Make a tmp dir to work in
       mkdir('-p', tmpDir);
@@ -47,7 +51,7 @@ require('shelljs/global');
       cd('/tmp');
 
       // Zip up the tmp dir and put the package in the original cwd
-      exec('zip -r app.zip "' + uuid + '"');
+      exec('zip -r app.zip "' + this.uuid + '"');
 
       // Zip up the app and the bash installer
       exec('zip -rj ' + this.target + ' install.command' + ' app.zip');
