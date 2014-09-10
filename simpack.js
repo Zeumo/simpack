@@ -49,8 +49,8 @@ require('shelljs/global');
       mkdir('-p', tmpDir);
 
       // Copy the app bits to tmp
-      cp('-r', '/tmp/' + this.app.name + '/Applications/*', tmpDir);
       this._writeInstaller();
+      cp('-r', '/tmp/' + this.app.name + '/Applications/*', tmpDir);
       cd('/tmp');
 
       // Zip up the tmp dir and put the package in the original cwd
@@ -62,6 +62,7 @@ require('shelljs/global');
       // Cleanup
       mv(this.target, this.options.dest);
       rm('-rf', tmpDir, '/tmp/' + this.app.name);
+      rm('-rf', 'app.zip', 'install.command');
       cd(this.cwd);
     },
 
