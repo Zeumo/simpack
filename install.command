@@ -1,14 +1,37 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-root_path="$HOME/Library/Application Support/iPhone Simulator/{simulatorVersion}/Applications/"
-path="`dirname \"$0\"`"
-archive="$path/app.zip"
+require 'pathname'
 
-# Find and remove existing app
-existing_app=`find "$root_path" -iname "{name}.app"`
-if [[ $existing_app != "" ]]; then
-  rm -rf ../$existing_app
-fi
+class Installer
+  attr_accessor :root_path, :pwd, :archive
 
-# Unpack new app to Simulator location
-unzip -o "$archive" -d "$root_path"
+  def initialize
+    @root_path = "#{ENV['HOME']}/Library/Application Support/iPhone Simulator/{simulatorVersion}/Applications"
+    @pwd       = Dir.pwd
+    @archive   = "#{@pwd}/app.zip"
+
+    remove_existing_apps!
+    unpack_to_root_path
+    done
+  end
+
+  def remove_existing_apps!
+    existing_apps.each do |path|
+      FileUtils.rm_rf Pathname.new(path).dirname
+    end
+  end
+
+  def unpack_to_root_path
+    `unzip -o "#{@archive}" -d "#{@root_path}"`
+  end
+
+  def done
+    puts "{name} installed. You may close this window."
+  end
+
+  def existing_apps
+    Dir.glob("#{@root_path}/**/Cura.app")
+  end
+end
+
+Installer.new
