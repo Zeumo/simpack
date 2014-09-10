@@ -14,7 +14,8 @@ require('shelljs/global');
     this.options = _.extend({
       app: 'app.json',
       dest: pwd(),
-      simulatorVersion: '7.1'
+      simulatorVersion: '7.1',
+      sdk: 'iphonesimulator7.1'
     }, options);
 
     this.app = this._appData();
@@ -58,14 +59,15 @@ require('shelljs/global');
     },
 
     compile: function() {
-      var commands = [
+      var command = '' +
         'xcodebuild' +
-          ' -configuration Release' +
+          ' -configuration Debug' +
           ' -target ' + this.app.name +
           ' -scheme ' + this.app.name +
-          ' -sdk iphonesimulator' +
-          ' DSTROOT=/tmp/' + this.app.name + ' install'
-      ];
+          ' -arch i386' +
+          ' -sdk ' + this.options.sdk +
+          ' DSTROOT=/tmp/' + this.app.name + ' clean install';
+
       cd('platforms/ios');
       exec(commands);
     },
