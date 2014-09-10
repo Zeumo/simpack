@@ -35,8 +35,11 @@ require('shelljs/global');
   Simpack.prototype = {
 
     pack: function() {
-      this.compile();
-      this.zip();
+      var compile = this.compile();
+
+      if (compile.code === 0) {
+        this.zip();
+      }
     },
 
     zip: function() {
@@ -73,7 +76,7 @@ require('shelljs/global');
           ' DSTROOT=/tmp/' + this.app.name + ' clean install';
 
       cd('platforms/ios');
-      exec(commands);
+      return exec(command);
     },
 
     _rootPath: function() {
