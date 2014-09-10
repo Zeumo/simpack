@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
+require 'fileutils'
 
 class Installer
-  attr_accessor :root_path, :pwd, :archive
+  attr_accessor :root_path, :path, :archive
 
   def initialize
     @root_path = "#{ENV['HOME']}/Library/Application Support/iPhone Simulator/{simulatorVersion}/Applications"
-    @pwd       = Dir.pwd
-    @archive   = "#{@pwd}/app.zip"
+    @path       = File.dirname __FILE__
+    @archive   = "#{@path}/app.zip"
 
     remove_existing_apps!
     unpack_to_root_path
