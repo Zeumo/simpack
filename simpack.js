@@ -23,7 +23,7 @@ require('shelljs/global');
 
     this.cwd     = pwd();
     this.version = _.compact([this.app.version, this.app.build]).join('-');
-    this.appName = this.app.display_name.replace(' ', '-').toLowerCase();
+    this.appName = this.app.display_name.replace(/\s/g, '-').toLowerCase();
     this.target  = [this.appName, this.version].join('-') + '.zip';
     this.uuid = this._uuid();
 
