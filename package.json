@@ -1,6 +1,6 @@
 {
   "name": "simpack",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Package iOS simulator builds easily",
   "main": "simpack.js",
   "scripts": {
@@ -9,7 +9,10 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^2.3.2",
+    "glob": "^4.0.6",
     "lodash": "^2.4.1",
-    "shelljs": "^0.3.0"
+    "shelljs": "^0.3.0",
+    "xml2js": "^0.4.4"
   }
 }
