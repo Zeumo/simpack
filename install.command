@@ -4,15 +4,14 @@ require 'pathname'
 require 'fileutils'
 
 class Installer
-  attr_accessor :root_path, :path, :archive, :xcode_version
+  attr_accessor :path, :xcode_version
 
   def initialize
-    @root_path = root_path
     @path      = File.dirname __FILE__
-    @archive   = "#{@path}/app.zip"
 
     remove_existing_apps!
-    unpack_to_root_path
+    extract_archive
+    copy_to_devices
     done
   end
 
@@ -22,25 +21,41 @@ class Installer
     end
   end
 
-  def unpack_to_root_path
-    `unzip -o "#{@archive}" -d "#{@root_path}"`
+  def extract_archive
+    `unzip -o "#{@path}/app.zip" -d /tmp/Simulator`
+  end
+
+  def copy_to_devices
+    devices.each do |dir|
+      `cp /tmp/Simulator/* #{application_path(dir)}`
+    end
   end
 
   def done
-    puts "{name} installed. You may close this window."
+    `rm -rf /tmp/Simulator && exit -f`
   end
 
   def existing_apps
-    Dir.glob("#{@root_path}/**/Cura.app")
+    Dir.glob("#{devices_path}/**/Cura.app")
   end
 
-  def root_path
+  def application_path(device_path)
+    path =  if xcode5?
+              '/Applications'
+            elsif xcode6?
+              '/Data/Applications'
+            end
+
+    device_path << path
+  end
+
+  def devices_path
     if xcode5?
-      "#{ENV['HOME']}/Library/Application Support/iPhone Simulator/{simulatorVersion}/Applications"
+      "#{ENV['HOME']}/Library/Application\\ Support/iPhone\\ Simulator"
     end
 
     if xcode6?
-      "#{ENV['HOME']}/Library/Developer/CoreSimulator/{UDID}/Data/Applications"
+      "#{ENV['HOME']}/Library/Developer/CoreSimulator/Devices"
     end
   end
 
@@ -59,11 +74,15 @@ class Installer
       build   = info[1].match(/Build version (.*)/)[1]
 
        {
-        version: version
-        major_version: version.to_i
+        version: version,
+        major_version: version.to_i,
         build: build
       }
     end
+  end
+
+  def devices
+    Dir.glob("#{devices_path}/*")
   end
 end
 
