@@ -2,12 +2,14 @@
 
 require 'pathname'
 require 'fileutils'
+require 'tmpdir'
 
 class Installer
-  attr_accessor :path, :xcode_version
+  attr_accessor :path, :xcode_version, :tmp
 
   def initialize
-    @path      = File.dirname __FILE__
+    @path = File.dirname __FILE__
+    @tmp  = Dir.mktmpdir
 
     remove_existing_apps!
     extract_archive
@@ -22,17 +24,17 @@ class Installer
   end
 
   def extract_archive
-    `unzip -o "#{@path}/app.zip" -d /tmp/Simulator`
+    `unzip -o "#{@path}/app.zip" -d #{@tmp}`
   end
 
   def copy_to_devices
     devices.each do |dir|
-      `cp /tmp/Simulator/* #{application_path(dir)}`
+      FileUtils.cp_r Dir.glob("#{@tmp}/*"), application_path(dir)
     end
   end
 
   def done
-    `rm -rf /tmp/Simulator && exit -f`
+    FileUtils.remove_entry @tmp
   end
 
   def existing_apps
@@ -51,11 +53,9 @@ class Installer
 
   def devices_path
     if xcode5?
-      "#{ENV['HOME']}/Library/Application\\ Support/iPhone\\ Simulator"
-    end
-
-    if xcode6?
-      "#{ENV['HOME']}/Library/Developer/CoreSimulator/Devices"
+      "#{Dir.home}/Library/Application\\ Support/iPhone\\ Simulator"
+    elsif xcode6?
+      "#{Dir.home}/Library/Developer/CoreSimulator/Devices"
     end
   end
 
